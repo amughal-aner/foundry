@@ -1,0 +1,39 @@
+[project]
+name = "foundry-dev"
+version = "0.1.0"
+description = "Dev tooling for the foundry Claude Code plugin marketplace (not a distributable package)."
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "pyright>=1.1.380",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+# The fixture carries deliberately seeded issues; lint it only on purpose.
+extend-exclude = ["fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE"]
+ignore = ["S603", "S607"]  # hook scripts intentionally spawn subprocesses by name
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["plugins", "evals", "tests"]
+exclude = ["fixtures", "**/.venv"]
+typeCheckingMode = "standard"
