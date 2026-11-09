@@ -241,6 +241,18 @@ hooks (`command` + `args`) need one real executable name, so they can't solve th
 | D-008 | The Notification hook matches `permission_prompt\|idle_prompt\|elicitation_dialog\|elicitation_url_dialog` only | Avoids alerts for `auth_success`, `agent_completed` and the like |
 | D-009 | The fixture uses a hatchling build backend (installed editable by `uv sync`), has its own `.gitignore`, and commits `uv.lock` | A realistic uv project. `uv.lock` makes `detect_stack` pick uv, and bootstrap appends to the existing `.gitignore` |
 
+## Phase 2 decisions
+
+| # | Decision | Why |
+|---|---|---|
+| D-010 | Skills call specialists with an explicit `subagent_type: "foundry:<agent>"` and say "not a fork". Steps after delegation are standing instructions ("when the report arrives, continue with step N") | Docs (sub-agents → background, fork mode): fork mode is **on by default** (v2.1.302+), so spawned subagents run in the background and Claude can't block on them in interactive sessions. Claude may also choose a fork on its own |
+| D-011 | All four specialists use the §2.2 format verbatim. The architect writes its ≥ 2 options as `[Suggestion] Option X` findings. The security auditor's STRIDE mode tags titles `(S)…(E)` and lists empty categories under Not checked. The designer writes acceptance criteria as `AC:` findings. Skills build their docs (ADR, STRIDE table, brief) from those | Keeps one shared format (plan §2.2) while still giving each skill what it needs |
+| D-012 | `code-reviewer` and `test-runner` get `PowerShell` alongside `Bash` | C-1: on Windows, shell commands often go through the PowerShell tool |
+| D-013 | Skills that write a document pre-approve only that directory (`allowed-tools: Edit(docs/adr/**)` etc.). Per the docs, `Edit` rules cover the Write tool | Fewer prompts with no broad grants. `Write(path)` rules don't match paths |
+| D-014 | `/foundry:audit` asks before reading anything (AskUserQuestion: Proceed / Narrow / Cancel) | Principle 12: warn about token cost first |
+
+Always-on estimate after Phase 2 (`claude plugin details`): **~869 tokens** for 8 skills + 5 agents.
+
 Observation for Phase 3: `claude plugin details` reports ~84 always-on tokens for `bootstrap`, although
 the skills docs say a `disable-model-invocation` description isn't in context. The Phase 3 `claude -p`
 measurement decides which is right.
