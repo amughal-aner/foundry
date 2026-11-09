@@ -220,18 +220,20 @@ hooks (`command` + `args`) need one real executable name, so they can't solve th
 | C-6 | Guards "exit 0 on internal error" | On Windows without Git Bash, a failing PreToolUse hook **blocks** unless `onFailure` is set | Set `"onFailure": "continue"` on every foundry hook |
 | C-7 | Marketplace example has no top-level `description` | Validate warns when it's missing | Add one |
 
-## Proposed deviations (not doc conflicts; need user OK)
+## Deviations from plan.md (not doc conflicts; **approved by user 2026-11-09**)
 
-| # | Proposal | Why |
+| # | Decision | Why |
 |---|---|---|
 | P-1 | `notify.py` on Windows: emit a `terminalSequence` OSC 9 notification instead of a PowerShell MessageBox. macOS: `osascript display notification` + OSC 9. Linux: `notify-send` if on PATH | A MessageBox is modal: it would block the hook until clicked or killed at the 10 s timeout. The docs recommend `terminalSequence` for desktop notifications |
 | P-2 | Settings fragment adds `Read(!./.env.example)` and `Read(!./.env.sample)` after `Read(./.env.*)` | Otherwise the deny blocks reading the safe example files, which contradicts `protect_paths` |
 | P-3 | Bootstrap warns that a project `verify` skill **replaces the bundled `/verify`** (app launch + drive) in that repo | The docs confirm the replacement. That's the plan's intent (pre-commit checks), but it changes what `/verify` means for teammates |
 
-## Open items
-- **uv is not installed** on this machine, so `uv sync` (Phase 0) and the uv-based Python pack can't run
-  here yet. The user must install uv (system-wide install needs their approval).
-- Git identity: none was configured. A repo-local identity was set for the Phase 0 commit (see Gate 0 summary).
+## Resolved items
+- **uv**: wasn't installed. With the user's approval, it was installed per-user via the official installer
+  (uv 0.13.7 in `~/.local/bin`, which isn't yet on the PATH of already-open shells). `uv sync` passes.
+- **Git identity**: none was configured. A repo-local `user.name`/`user.email` was set for this repo only.
+- **Line endings**: git converts LF to CRLF on this machine, which would break `sh` scripts on macOS.
+  `.gitattributes` forces LF for all text files.
 
 ## Backlog (log only, don't build)
 - See plan.md §5.
