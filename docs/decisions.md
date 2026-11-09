@@ -253,6 +253,16 @@ hooks (`command` + `args`) need one real executable name, so they can't solve th
 
 Always-on estimate after Phase 2 (`claude plugin details`): **~869 tokens** for 8 skills + 5 agents.
 
+## Phase 3 decisions
+
+| # | Decision | Why |
+|---|---|---|
+| D-015 | Measured always-on overhead with `evals/measure_overhead.py`: **743 tokens** (median of 3 per arm, identical every run). PASS against the 2,000 budget | Lower than the `plugin details` estimate (~869), which confirms the docs: `disable-model-invocation` skills cost nothing until typed. This resolves the Phase 1 observation |
+| D-016 | `claude plugin eval` is available, so the fallback `run_evals.py` isn't built. The suite is generated into `plugins/foundry/evals/` by `evals/build_suite.py`, with patterns parsed from the answer key | C-3. One source of truth for hit patterns. `test_build_suite.py` fails if the suite drifts from the generator |
+| D-017 | Case prompts are plain language (no slash command), identical in both arms, and name the exact output path | Plugin eval sends one prompt to both arms. Naming the path gives the baseline a fair chance and lets graders read the file. It also tests that the skill triggers on natural phrasing |
+| D-018 | Hit patterns must not match the fixture's own source (enforced by a test). Pattern 4 lost `page \* page_size`, which is the buggy line itself | Otherwise a document that merely quotes the code scores a hit |
+| D-019 | `review-diff` cases are tagged `needs-bash`: they need `--allow-tools "Bash(git *)"` and an OS sandbox, so they run on macOS/Linux/WSL2 only | Docs: Bash grants have no sandbox backend on native Windows, so runs are refused |
+
 Observation for Phase 3: `claude plugin details` reports ~84 always-on tokens for `bootstrap`, although
 the skills docs say a `disable-model-invocation` description isn't in context. The Phase 3 `claude -p`
 measurement decides which is right.

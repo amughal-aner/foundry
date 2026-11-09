@@ -31,6 +31,7 @@ ignore = ["S603", "S607"]  # hook scripts intentionally spawn subprocesses by na
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
+"evals/build_suite.py" = ["E501"]  # case prompts and scaffold snippets are data
 
 [tool.pyright]
 pythonVersion = "3.10"
@@ -39,6 +40,7 @@ exclude = ["fixtures", "**/.venv"]
 # Plugin scripts are standalone files (copied to the plugin cache), so tests import them by path.
 extraPaths = [
     "tests",
+    "evals",
     "plugins/foundry/hooks/scripts",
     "plugins/foundry/skills/bootstrap/scripts",
     "plugins/foundry/packs/python/hooks",

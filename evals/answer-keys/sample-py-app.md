@@ -15,13 +15,19 @@ count as a hit. Phase 3 graders inline these patterns.
 
 ## Hit patterns
 
+`evals/build_suite.py` parses this block (one `id  pattern` per line) into graders. Patterns
+must not match the fixture's source code verbatim (e.g. no bare `find_users`), so a document that
+merely quotes the code doesn't count as finding the issue.
+
 ```text
-1  sql.?injection|f-?string.{0,80}(sql|query)|parameteri[sz]ed|find_users
-2  hard.?coded.{0,40}(key|secret|credential)|BILLING_API_KEY
-3  (authori[sz]ation|permission|access control|can_edit|ownership).{0,120}delete|delete_project.{0,160}(authori[sz]|permission|check|owner|can_edit)
-4  off.?by.?one|page \* page_size|\(page ?- ?1\)|first page|paginat.{0,80}(skip|wrong|bug)
-5  (single|one|monolithic|god|large|long).{0,40}function|build_usage_report.{0,120}(split|separate|responsibilit|mix)|bypass.{0,40}api|cli.{0,60}(imports?|calls?).{0,20}db
-6  traceback|raw exception|error messages?|confirm(ation)?.{0,60}delete|delete.{0,80}confirm|--yes|are you sure
+1   sql.?injection|f-?string.{0,80}(sql|query)|parameteri[sz]ed
+2   hard.?coded.{0,40}(key|secret|credential|token)|(secret|credential|api.?key).{0,60}(in (the )?source|committed|in code)
+3   (authori[sz]ation|permission|access.?control|can_edit|ownership|owner check).{0,120}delet|delete_project.{0,160}(authori[sz]|permission|check|owner|can_edit)
+4   off.?by.?one|\(page ?- ?1\)|skips? the first|first page|[01].?based|zero.?based
+5a  (single|one|monolithic|god|large|long|\d{3}.?line).{0,40}function|build_usage_report.{0,160}(split|separate|responsibilit|mix|extract)
+5b  bypass.{0,60}(api|service)|cli.{0,80}(imports?|calls?|uses?|reaches?).{0,40}\bdb\b|direct(ly)?.{0,40}(db|database|storage)
+6a  traceback|raw exception|stack trace|unhandled (exception|error)
+6b  confirm(ation)?.{0,80}delet|delet.{0,80}confirm|--yes|are you sure
 ```
 
 ## Not seeded (don't count as misses)
