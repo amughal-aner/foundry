@@ -1,0 +1,12 @@
+{
+  "name": "foundry",
+  "owner": { "name": "TEAM-NAME-PLACEHOLDER" },
+  "description": "Private team marketplace: the foundry plugin for project bootstrap and on-demand specialists.",
+  "plugins": [
+    {
+      "name": "foundry",
+      "source": "./plugins/foundry",
+      "description": "Project bootstrap + on-demand architecture, security, product and review specialists."
+    }
+  ]
+}

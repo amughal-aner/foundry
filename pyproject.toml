@@ -36,4 +36,11 @@ ignore = ["S603", "S607"]  # hook scripts intentionally spawn subprocesses by na
 pythonVersion = "3.10"
 include = ["plugins", "evals", "tests"]
 exclude = ["fixtures", "**/.venv"]
+# Plugin scripts are standalone files (copied to the plugin cache), so tests import them by path.
+extraPaths = [
+    "tests",
+    "plugins/foundry/hooks/scripts",
+    "plugins/foundry/skills/bootstrap/scripts",
+    "plugins/foundry/packs/python/hooks",
+]
 typeCheckingMode = "standard"

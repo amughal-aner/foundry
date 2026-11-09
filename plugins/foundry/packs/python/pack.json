@@ -1,0 +1,14 @@
+{
+  "name": "python",
+  "detect": ["pyproject.toml", "uv.lock", "requirements.txt", "requirements-dev.txt", "setup.py", "setup.cfg"],
+  "defaults": {
+    "install": "uv sync",
+    "test": "uv run pytest -q",
+    "test_one": "uv run pytest -q path/to/test_file.py::test_name",
+    "lint": "uv run ruff check .",
+    "format": "uv run ruff format .",
+    "format_check": "uv run ruff format --check .",
+    "typecheck": "uv run pyright"
+  },
+  "detect_overrides": "If the project uses poetry/pip/hatch/tox/mypy instead, bootstrap uses those commands."
+}

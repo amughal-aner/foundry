@@ -1,0 +1,41 @@
+{
+  "description": "foundry guards: protect secret paths, block destructive shell commands, desktop notifications.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/protect_paths.py\"",
+            "timeout": 10,
+            "onFailure": "continue"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/guard_bash.py\"",
+            "timeout": 10,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt|elicitation_dialog|elicitation_url_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/notify.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

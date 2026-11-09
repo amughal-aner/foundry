@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(uv sync *)",
+      "Bash(uv run pytest *)",
+      "Bash(uv run ruff *)",
+      "Bash(uv run pyright *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "PowerShell(uv sync *)",
+      "PowerShell(uv run pytest *)",
+      "PowerShell(uv run ruff *)",
+      "PowerShell(uv run pyright *)",
+      "PowerShell(git status *)",
+      "PowerShell(git diff *)",
+      "PowerShell(git log *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(!.env.example)",
+      "Read(!.env.sample)",
+      "Read(./secrets/**)",
+      "Bash(git push --force *)",
+      "Bash(rm -rf *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(Remove-Item -Recurse -Force *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PROJECT_DIR}/.claude/hooks/py\" \"${CLAUDE_PROJECT_DIR}/.claude/hooks/ruff_on_edit.py\"",
+            "timeout": 30,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ]
+  }
+}

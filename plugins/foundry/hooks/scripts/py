@@ -1,0 +1,19 @@
+#!/bin/sh
+# foundry: run a Python script with whatever interpreter this OS provides.
+# Usage: sh py <script.py> [args...]   (stdin is passed through by exec)
+#
+# Windows (Git Bash): try python, py, python3 - python3 is often the Microsoft Store stub.
+# macOS/Linux: try python3, python.
+# The scripts themselves check for Python >= 3.9 (macOS CLT ships 3.9) and exit 0 if older.
+# If no interpreter exists, warn and exit 0 so a missing Python never blocks a session.
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) candidates="python py python3" ;;
+  *) candidates="python3 python" ;;
+esac
+for p in $candidates; do
+  if command -v "$p" >/dev/null 2>&1; then
+    exec "$p" "$@"
+  fi
+done
+echo "foundry: no Python interpreter found on PATH; hook skipped" >&2
+exit 0

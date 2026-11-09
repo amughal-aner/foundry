@@ -228,6 +228,23 @@ hooks (`command` + `args`) need one real executable name, so they can't solve th
 | P-2 | Settings fragment adds `Read(!./.env.example)` and `Read(!./.env.sample)` after `Read(./.env.*)` | Otherwise the deny blocks reading the safe example files, which contradicts `protect_paths` |
 | P-3 | Bootstrap warns that a project `verify` skill **replaces the bundled `/verify`** (app launch + drive) in that repo | The docs confirm the replacement. That's the plan's intent (pre-commit checks), but it changes what `/verify` means for teammates |
 
+## Phase 1 decisions
+
+| # | Decision | Why |
+|---|---|---|
+| D-002 | Bootstrap writes files through a third script, `skills/bootstrap/scripts/apply_bootstrap.py` (`--dry-run`, `--approve PATH`). The interview answers go to `<project>/.claude/foundry.json`, which the script reads | Principles 7 and 11: deterministic, idempotent writes with diffs, which are testable. Hand-writing files with Claude can't guarantee "a second run changes nothing". Re-runs reuse the answers file |
+| D-003 | Plugin scripts (hooks + bootstrap) support **Python ≥ 3.9**. The suite runs under uv-managed 3.9 and 3.12 | macOS Command Line Tools ship `python3` 3.9. A 3.10 floor would silently turn the guards off for Mac teammates. Running on 3.9 caught `Path.write_text(newline=)`, which is 3.10+ only |
+| D-004 | `guard_bash` doesn't exempt quoted text: `echo "rm -rf /"` is **blocked** | A false positive costs one retry. Exempting quotes would let `bash -c 'rm -rf /'` through. Documented in the script header and tested |
+| D-005 | `ruff_on_edit.py` runs `ruff check --fix`, **then** `ruff format`, then re-checks only if issues remain (plan said format, then check) | Ruff's recommended order: fixes such as removing an unused import leave blank gaps that only the formatter cleans. The re-check gives line numbers that match the formatted file |
+| D-006 | `pack.json` gains `format_check` (`uv run ruff format --check .`), which `/verify` uses. Verify's `allowed-tools` is derived from the confirmed commands (Bash + PowerShell forms) | `/verify` must not modify files. The plan's `format` command rewrites them |
+| D-007 | `templates/settings.base.json` (guard denies + git read rules) is always merged. The pack fragment adds runner permissions and the hook. Every Bash rule has a `PowerShell(...)` twin | The plan's "guard settings only" case when no pack matches. C-1 |
+| D-008 | The Notification hook matches `permission_prompt\|idle_prompt\|elicitation_dialog\|elicitation_url_dialog` only | Avoids alerts for `auth_success`, `agent_completed` and the like |
+| D-009 | The fixture uses a hatchling build backend (installed editable by `uv sync`), has its own `.gitignore`, and commits `uv.lock` | A realistic uv project. `uv.lock` makes `detect_stack` pick uv, and bootstrap appends to the existing `.gitignore` |
+
+Observation for Phase 3: `claude plugin details` reports ~84 always-on tokens for `bootstrap`, although
+the skills docs say a `disable-model-invocation` description isn't in context. The Phase 3 `claude -p`
+measurement decides which is right.
+
 ## Resolved items
 - **uv**: wasn't installed. With the user's approval, it was installed per-user via the official installer
   (uv 0.13.7 in `~/.local/bin`, which isn't yet on the PATH of already-open shells). `uv sync` passes.
