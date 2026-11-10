@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the `claude plugin eval` suite under plugins/foundry/evals/ (plan.md §3.2). Stdlib.
+"""Generate the `claude plugin eval` suite under plugins/foundry/evals/ (build-plan.md §3.2). Stdlib.
 
 Usage:
     python evals/build_suite.py          # (re)write every case directory

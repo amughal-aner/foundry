@@ -1,4 +1,4 @@
-"""Enforce plan.md §2 design principles on the shipped plugin files."""
+"""Enforce build-plan.md §2 design principles on the shipped plugin files."""
 
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def test_hooks_json_uses_launcher_timeouts_and_fail_open():
                     assert handler["onFailure"] == "continue"
 
 
-AGENT_TABLE = {  # plan.md §2.1 (+ PowerShell twin for Bash, decision C-1)
+AGENT_TABLE = {  # build-plan.md §2.1 (+ PowerShell twin for Bash, decision C-1)
     "architect": ("opus", {"Read", "Grep", "Glob"}),
     "security-auditor": ("opus", {"Read", "Grep", "Glob"}),
     "product-designer": ("sonnet", {"Read", "Grep", "Glob"}),

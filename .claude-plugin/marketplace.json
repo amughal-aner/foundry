@@ -1,6 +1,6 @@
 {
   "name": "foundry",
-  "owner": { "name": "TEAM-NAME-PLACEHOLDER" },
+  "owner": { "name": "Arshad Mughal" },
   "description": "Private team marketplace: the foundry plugin for project bootstrap and on-demand specialists.",
   "plugins": [
     {

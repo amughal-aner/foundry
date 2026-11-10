@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash # Git Bash on Windows, the same shell the hooks run in (D-001)
+
+jobs:
+  validate:
+    name: claude plugin validate
+    runs-on: ubuntu-latest
+    env:
+      # Pinned for reproducible CI; bump deliberately. Must stay >= 2.1.286 (plan minimum).
+      CLAUDE_CODE_VERSION: "2.1.319"
+      DISABLE_AUTOUPDATER: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+      - name: Validate the plugin
+        run: claude plugin validate ./plugins/foundry
+      - name: Validate the marketplace
+        run: claude plugin validate .
+
+  test:
+    name: pytest (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.12"]
+        include:
+          # Plugin scripts support 3.9 (macOS Command Line Tools python3; D-003).
+          - os: ubuntu-latest
+            python: "3.9"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Run tests (project env)
+        if: matrix.python != '3.9'
+        run: |
+          uv sync --python "${{ matrix.python }}"
+          uv run pytest
+      - name: Run tests (Python 3.9, no project env)
+        if: matrix.python == '3.9'
+        run: uv run --isolated --no-project --python 3.9 --with pytest pytest

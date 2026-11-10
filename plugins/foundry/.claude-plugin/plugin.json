@@ -2,6 +2,6 @@
   "name": "foundry",
   "version": "0.1.0",
   "description": "Project bootstrap + on-demand architecture, security, product and review specialists.",
-  "author": { "name": "TEAM-NAME-PLACEHOLDER" },
+  "author": { "name": "Arshad Mughal" },
   "keywords": ["bootstrap", "python", "architecture", "security", "code-review"]
 }

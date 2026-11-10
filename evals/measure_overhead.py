@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure foundry's always-on context overhead (plan.md §3.1). Stdlib only.
+"""Measure foundry's always-on context overhead (build-plan.md §3.1). Stdlib only.
 
 Usage:
     python evals/measure_overhead.py [--runs 3] [--fixture fixtures/sample-py-app]

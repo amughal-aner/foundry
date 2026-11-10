@@ -80,7 +80,7 @@ These come from checking the official docs. Don't violate them without logging a
 
 ```
 foundry/                                   # repo root (this directory)
-├── plan.md                                # this file (moved to docs/build-plan.md in Phase 4)
+├── (plan.md moved to docs/build-plan.md in Phase 4)
 ├── README.md
 ├── CHANGELOG.md
 ├── pyproject.toml                         # dev tooling for the repo itself (pytest, ruff, pyright)

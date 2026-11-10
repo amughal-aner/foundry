@@ -1,8 +1,9 @@
 # Decisions log
 
 Source of truth for config formats is the official docs at `https://code.claude.com/docs/en/<page>.md`,
-fetched raw on **2026-11-09** against **Claude Code 2.1.319**. Where the docs and `plan.md`
-disagree, the docs win and the difference is listed under **Conflicts with plan.md**.
+fetched raw on **2026-11-09** against **Claude Code 2.1.319**. `plan.md` is the build plan (moved to
+`docs/build-plan.md` in Phase 4). Where the docs and `plan.md` disagree,
+the docs win and the difference is listed under **Conflicts with plan.md**.
 
 ---
 
@@ -268,6 +269,16 @@ Always-on estimate after Phase 2 (`claude plugin details`): **~869 tokens** for 
 Observation for Phase 3: `claude plugin details` reports ~84 always-on tokens for `bootstrap`, although
 the skills docs say a `disable-model-invocation` description isn't in context. The Phase 3 `claude -p`
 measurement decides which is right.
+
+## Phase 4 decisions
+
+| # | Decision | Why |
+|---|---|---|
+| D-022 | **User decision (2026-11-10):** the GitHub `org/repo` isn't chosen yet. `foundry.config.json` keeps `marketplace_source: null`, and README uses `OWNER/foundry`. Owner/author is `Arshad Mughal`. **Before the first push:** set `marketplace_source` to `{"source": "github", "repo": "<org>/<repo>"}` and replace `OWNER/foundry` in `README.md` | A placeholder source would make bootstrap write a broken `extraKnownMarketplaces` entry into every project. `null` makes bootstrap skip it |
+| D-023 | CI installs Claude Code with `npm install -g @anthropic-ai/claude-code@<pinned>` (Node 22), not the `curl \| bash` installer, and sets `DISABLE_AUTOUPDATER=1` | Docs (setup): the npm package ships the same native binary and takes an exact version. Reproducible, and no pipe-to-shell. `claude plugin validate` needs no login (checked locally with an empty `CLAUDE_CONFIG_DIR`) |
+| D-024 | CI tests run on ubuntu/macos/windows with Python 3.12, plus ubuntu with 3.9 (`uv run --isolated --no-project --python 3.9 --with pytest pytest`). Shell is bash on every OS | The team uses Windows + macOS. 3.9 is the plugin-script floor (D-003). Windows runners provide Git Bash, the same shell the hooks use (D-001) |
+| D-025 | No `LICENSE` and no icon. `claude plugin validate` reports README/LICENSE/icon under "plugin directory checks", which don't affect the verdict | Those checks are for submitting to Anthropic's public plugin directory. foundry is a private team marketplace. The root `README.md` now satisfies the README check |
+| D-026 | Release tag is `v0.1.0`, as the plan says, not the `foundry--v0.1.0` that `claude plugin tag` would create | One plugin per marketplace, so a plain repo-level tag is clear. Switch to `claude plugin tag` if a second plugin is added |
 
 ## Resolved items
 - **uv**: wasn't installed. With the user's approval, it was installed per-user via the official installer
