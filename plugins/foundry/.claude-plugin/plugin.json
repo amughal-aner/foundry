@@ -3,5 +3,6 @@
   "version": "0.1.0",
   "description": "Project bootstrap + on-demand architecture, security, product and review specialists.",
   "author": { "name": "Arshad Mughal" },
+  "repository": "https://github.com/amughal-aner/foundry",
   "keywords": ["bootstrap", "python", "architecture", "security", "code-review"]
 }

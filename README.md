@@ -25,7 +25,7 @@ to add another.
 In any Claude Code session:
 
 ```
-/plugin marketplace add OWNER/foundry
+/plugin marketplace add amughal-aner/foundry
 /plugin install foundry@foundry
 ```
 
@@ -41,7 +41,7 @@ bootstrap, add it by hand and commit it:
 ```json
 {
   "extraKnownMarketplaces": {
-    "foundry": { "source": { "source": "github", "repo": "OWNER/foundry" } }
+    "foundry": { "source": { "source": "github", "repo": "amughal-aner/foundry" } }
   },
   "enabledPlugins": { "foundry@foundry": true }
 }
@@ -49,7 +49,7 @@ bootstrap, add it by hand and commit it:
 
 When a teammate opens the repo and trusts the folder, Claude Code offers to add the marketplace and
 install the plugin. The same thing from a shell:
-`claude plugin marketplace add OWNER/foundry --scope project`.
+`claude plugin marketplace add amughal-aner/foundry --scope project`.
 
 ## The daily loop
 

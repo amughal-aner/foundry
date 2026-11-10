@@ -161,3 +161,22 @@ def test_all_planned_skills_exist():
 def test_shell_scripts_have_lf_line_endings():
     for script in [PLUGIN / "hooks" / "scripts" / "py"]:
         assert b"\r\n" not in script.read_bytes()
+
+
+def test_marketplace_source_matches_readme():
+    """foundry.config.json drives what bootstrap writes; README must advertise the same repo."""
+    config = json.loads((PLUGIN / "foundry.config.json").read_text(encoding="utf-8"))
+    market = json.loads(
+        (PLUGIN.parents[1] / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8")
+    )
+    assert config["marketplace_name"] == market["name"]
+    source = config["marketplace_source"]
+    if source is None:
+        return
+    readme = (PLUGIN.parents[1] / "README.md").read_text(encoding="utf-8")
+    if source["source"] == "github":
+        assert re.fullmatch(r"[A-Za-z0-9-]+/[A-Za-z0-9._-]+", source["repo"]), source
+        assert f"/plugin marketplace add {source['repo']}" in readme
+        assert f'"repo": "{source["repo"]}"' in readme
+    else:
+        assert source["source"] == "git" and source.get("url"), source
